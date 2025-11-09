@@ -1,21 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct Node {
+// Define structure using typedef
+typedef struct Node {
     int data;
     struct Node* next;
-};
+} Node;
 
 // Function to create a new node
-struct Node* createNode(int data) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
     newNode->data = data;
     newNode->next = NULL;
     return newNode;
 }
 
-// Function to create a linked list
-struct Node* createList(struct Node* head) {
+// Function to create the linked list
+Node* createList(Node* head) {
     int n, data;
     printf("Enter number of nodes: ");
     scanf("%d", &n);
@@ -23,37 +24,37 @@ struct Node* createList(struct Node* head) {
     for (int i = 0; i < n; i++) {
         printf("Enter data for node %d: ", i + 1);
         scanf("%d", &data);
+        Node* newNode = createNode(data);
 
-        struct Node* newNode = createNode(data);
         if (head == NULL) {
             head = newNode;
         } else {
-            struct Node* temp = head;
+            Node* temp = head;
             while (temp->next != NULL)
                 temp = temp->next;
             temp->next = newNode;
         }
     }
-    return head; // return updated list
+    return head;
 }
 
 // Delete first node
-struct Node* deleteFirst(struct Node* head) {
+Node* deleteFirst(Node* head) {
     if (head == NULL) {
         printf("List is empty.\n");
         return head;
     }
 
-    struct Node* temp = head;
+    Node* temp = head;
     head = head->next;
     printf("Deleted first element: %d\n", temp->data);
     free(temp);
 
-    return head; // return new head
+    return head;
 }
 
 // Delete last node
-struct Node* deleteLast(struct Node* head) {
+Node* deleteLast(Node* head) {
     if (head == NULL) {
         printf("List is empty.\n");
         return head;
@@ -65,7 +66,7 @@ struct Node* deleteLast(struct Node* head) {
         return NULL;
     }
 
-    struct Node* temp = head;
+    Node* temp = head;
     while (temp->next->next != NULL)
         temp = temp->next;
 
@@ -76,23 +77,20 @@ struct Node* deleteLast(struct Node* head) {
     return head;
 }
 
-// Delete specific node by value
-struct Node* deleteSpecific(struct Node* head, int value) {
+// Delete specific node by value (calls deleteFirst if needed)
+Node* deleteSpecific(Node* head, int value) {
     if (head == NULL) {
         printf("List is empty.\n");
         return head;
     }
 
-    struct Node* temp = head;
-    struct Node* prev = NULL;
-
-    // If head node itself holds the value
+    // If the first node is to be deleted
     if (head->data == value) {
-        head = head->next;
-        printf("Deleted element: %d\n", temp->data);
-        free(temp);
-        return head;
+        return deleteFirst(head);
     }
+
+    Node* temp = head;
+    Node* prev = NULL;
 
     while (temp != NULL && temp->data != value) {
         prev = temp;
@@ -111,14 +109,14 @@ struct Node* deleteSpecific(struct Node* head, int value) {
     return head;
 }
 
-// Display function (no modification, pass by value is fine)
-void displayList(struct Node* head) {
+// Display list contents
+void displayList(Node* head) {
     if (head == NULL) {
         printf("List is empty.\n");
         return;
     }
 
-    struct Node* temp = head;
+    Node* temp = head;
     printf("Linked List: ");
     while (temp != NULL) {
         printf("%d -> ", temp->data);
@@ -129,7 +127,7 @@ void displayList(struct Node* head) {
 
 // Main function
 int main() {
-    struct Node* head = NULL;
+    Node* head = NULL;
     int choice, value;
 
     while (1) {
@@ -162,10 +160,12 @@ int main() {
                 displayList(head);
                 break;
             case 6:
+                printf("Exiting program.\n");
                 exit(0);
             default:
                 printf("Invalid choice! Try again.\n");
         }
     }
+
     return 0;
 }
